@@ -4,9 +4,9 @@ import org.jboss.netty.channel.Channel
 import com.twitter.finagle.builder.ServerBuilder
 import org.jboss.netty.buffer.ChannelBuffer
 import protocol.text.Memcached
-import java.net.SocketAddress
+import _root_.java.net.SocketAddress
 import com.twitter.util.SynchronizedLruMap
-import util.AtomicMap
+import com.twitter.schmemcached.util.AtomicMap
 
 class Server(address: SocketAddress) {
   val concurrencyLevel = 16
@@ -24,7 +24,7 @@ class Server(address: SocketAddress) {
   private[this] val serverSpec =
     ServerBuilder()
       .name("schmemcached")
-      .codec(Memcached)
+      .codec(new Memcached)
       .service(service)
       .bindTo(address)
 

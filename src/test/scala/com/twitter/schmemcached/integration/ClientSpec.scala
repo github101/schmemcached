@@ -7,6 +7,7 @@ import com.twitter.schmemcached.protocol.text.Memcached
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.schmemcached.Client
 import org.jboss.netty.util.CharsetUtil
+import com.twitter.schmemcached.util.ChannelBufferUtils._
 
 object ClientSpec extends Specification {
   /**
@@ -16,7 +17,7 @@ object ClientSpec extends Specification {
     "simple client" in {
       val service = ClientBuilder()
         .hosts("localhost:11211")
-        .codec(Memcached)
+        .codec(new Memcached)
         .buildService[Command, Response]()
       val client = Client(service)
 
@@ -31,7 +32,7 @@ object ClientSpec extends Specification {
       "gets" in {
         client.set("foo", "bar")()
         client.set("baz", "boing")()
-        val result = client.get("foo", "baz", "notthere")()
+        val result = client.get(Seq("foo", "baz", "notthere"))()
           .map { case (key, value) => (key, value.toString(CharsetUtil.UTF_8)) }
         result mustEqual Map(
           "foo" -> "bar",
@@ -59,12 +60,12 @@ object ClientSpec extends Specification {
       val service1 = ClientBuilder()
         .name("service1")
         .hosts("localhost:11211")
-        .codec(Memcached)
+        .codec(new Memcached)
         .buildService[Command, Response]()
       val service2 = ClientBuilder()
         .name("service2")
         .hosts("localhost:11212")
-        .codec(Memcached)
+        .codec(new Memcached)
         .buildService[Command, Response]()
       val client = Client(Seq(service1, service2))
 

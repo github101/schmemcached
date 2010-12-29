@@ -1,6 +1,6 @@
 package com.twitter.schmemcached
 
-import java.net.InetSocketAddress
+import _root_.java.net.InetSocketAddress
 
 object Main {
   def main(args: Array[String]) {
