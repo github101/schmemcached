@@ -16,7 +16,7 @@ public class ClientTest {
         .codec(new Memcached())
         .buildService();
 
-    Client client = ClientBase.newInstance(service);
+    Client client = Client.newInstance(service);
     client.delete("foo").get();
     client.set("foo", "bar").get();
     assert(client.get("foo").get().toString(Charset.defaultCharset()) == "bar");

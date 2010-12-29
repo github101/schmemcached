@@ -49,7 +49,7 @@ object Show {
           buffer.writeBytes(SPACE)
           buffer.writeBytes(ZERO)
           buffer.writeBytes(SPACE)
-          buffer.writeBytes(value.capacity.toString.getBytes)
+          buffer.writeBytes(value.readableBytes.toString.getBytes)
           buffer.writeBytes(DELIMETER)
           value.resetReaderIndex()
           buffer.writeBytes(value)
@@ -123,7 +123,7 @@ object Show {
   }
 
   @inline private[this] def showStorageCommand(name: Array[Byte], key: ChannelBuffer, value: ChannelBuffer) = {
-    val buffer = ChannelBuffers.dynamicBuffer(50 + value.capacity)
+    val buffer = ChannelBuffers.dynamicBuffer(50 + value.readableBytes)
     buffer.writeBytes(name)
     buffer.writeBytes(SPACE)
     buffer.writeBytes(key)
@@ -132,7 +132,7 @@ object Show {
     buffer.writeBytes(SPACE)
     buffer.writeBytes(ZERO)
     buffer.writeBytes(SPACE)
-    buffer.writeBytes(value.capacity.toString.getBytes)
+    buffer.writeBytes(value.readableBytes.toString.getBytes)
     buffer.writeBytes(DELIMETER)
     buffer.writeBytes(value)
     buffer.writeBytes(DELIMETER)
