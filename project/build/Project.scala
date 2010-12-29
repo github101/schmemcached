@@ -4,7 +4,9 @@ import com.twitter.sbt._
 class Project(info: ProjectInfo)
   extends StandardProject(info)
   with AdhocInlines
+  with SubversionPublisher
 {
+  override def subversionRepository = Some("http://svn.local.twitter.com/maven-public")  
   override def compileOrder = CompileOrder.ScalaThenJava
 
   override def managedStyle = ManagedStyle.Maven
@@ -23,8 +25,8 @@ class Project(info: ProjectInfo)
   override def filterScalaJars = false
 
   val netty = "org.jboss.netty" %  "netty" % "3.2.2.Final"
-  val finagle = "com.twitter" % "finagle"  % "1.0.9"
-  val util = "com.twitter" % "util"        % "1.4.3"
+  val finagle = "com.twitter" % "finagle"  % "1.0.11-SNAPSHOT"
+  val util = "com.twitter" % "util"        % "1.4.4-SNAPSHOT"
   val junit = "junit" % "junit" % "3.8.2" % "test"
 
   override def distZipName = "%s.zip".format(name)
