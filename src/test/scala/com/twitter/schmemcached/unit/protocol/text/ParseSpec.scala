@@ -24,11 +24,11 @@ class ParserSpec extends Specification {
 
     "parse storage commands" in {
       val buffer = "bar"
-      ParseCommand(Seq("add",     "foo", "0", "0", "3"), buffer) mustEqual Add("foo", buffer)
-      ParseCommand(Seq("set",     "foo", "0", "0", "3"), buffer) mustEqual Set("foo", buffer)
-      ParseCommand(Seq("replace", "foo", "0", "0", "3"), buffer) mustEqual Replace("foo", buffer)
-      ParseCommand(Seq("append",  "foo", "0", "0", "3"), buffer) mustEqual Append("foo", buffer)
-      ParseCommand(Seq("prepend", "foo", "0", "0", "3"), buffer) mustEqual Prepend("foo", buffer)
+      ParseCommand(Seq("add",     "foo", "1", "2", "3"), buffer) mustEqual Add("foo", 1, 2, buffer)
+      ParseCommand(Seq("set",     "foo", "1", "2", "3"), buffer) mustEqual Set("foo", 1, 2, buffer)
+      ParseCommand(Seq("replace", "foo", "1", "2", "3"), buffer) mustEqual Replace("foo", 1, 2, buffer)
+      ParseCommand(Seq("append",  "foo", "1", "2", "3"), buffer) mustEqual Append("foo", 1, 2, buffer)
+      ParseCommand(Seq("prepend", "foo", "1", "2", "3"), buffer) mustEqual Prepend("foo", 1, 2, buffer)
     }
   }
 

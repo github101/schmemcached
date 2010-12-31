@@ -34,7 +34,7 @@ object InterpreterServiceSpec extends Specification {
       val start = System.currentTimeMillis
       (0 until 100) map { i =>
         val key = _key + "i"
-        client(Set(key, value))()
+        client(Set(key, 0, 0, value))()
         client(Get(Seq(key)))()
       }
       val end = System.currentTimeMillis
