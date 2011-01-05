@@ -36,6 +36,7 @@ object Show {
       case Stored         => STORED
       case NotStored      => NOT_STORED
       case Deleted        => DELETED
+      case NotFound       => NOT_FOUND
       case Number(value)  =>
         val buffer = ChannelBuffers.dynamicBuffer(10)
         buffer.writeBytes(value.toString.getBytes)

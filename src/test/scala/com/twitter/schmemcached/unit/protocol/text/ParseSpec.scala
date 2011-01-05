@@ -43,9 +43,9 @@ class ParserSpec extends Specification {
     }
 
     "parse simple responses" in {
-      ParseResponse(Seq("STORED"))     mustEqual Stored()
-      ParseResponse(Seq("NOT_STORED")) mustEqual NotStored()
-      ParseResponse(Seq("DELETED"))    mustEqual Deleted()
+      ParseResponse(Seq("STORED"))     mustEqual Stored
+      ParseResponse(Seq("NOT_STORED")) mustEqual NotStored
+      ParseResponse(Seq("DELETED"))    mustEqual Deleted
     }
 
     "parse values" in {

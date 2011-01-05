@@ -16,6 +16,7 @@ class InterpreterSpec extends Specification {
     "set & get" in {
       val key   = "foo"
       val value = "bar"
+      interpreter(Delete(key))
       interpreter(Set(key, 0, 0, value))
       interpreter(Get(Seq(key))) mustEqual Values(Seq(Value(key, value)))
     }

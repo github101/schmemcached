@@ -33,11 +33,13 @@ object InterpreterServiceSpec extends Specification {
       val value = "value"
       val start = System.currentTimeMillis
       (0 until 100) map { i =>
-        val key = _key + "i"
+        val key = _key + i
+        client(Delete(key))()
         client(Set(key, 0, 0, value))()
-        client(Get(Seq(key)))()
+        client(Get(Seq(key)))() mustEqual Values(Seq(Value(key, value)))
       }
       val end = System.currentTimeMillis
+      println("%d ms".format(end - start))
     }
   }
 }
