@@ -35,7 +35,8 @@ object InterpreterServiceSpec extends Specification {
       val key   = "key"
       val value = "value"
       val result = for {
-        _ <- client(Set(key, value))
+        _ <- client(Delete(key))
+        _ <- client(Set(key, 0, 0, value))
         r <- client(Get(Seq(key)))
       } yield r
       result(1.second) mustEqual Values(Seq(Value(key, value)))
