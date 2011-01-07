@@ -4,7 +4,11 @@ import com.twitter.sbt._
 class Project(info: ProjectInfo)
   extends StandardProject(info)
   with AdhocInlines
+  with SubversionPublisher
 {
+  override def subversionRepository = Some("http://svn.local.twitter.com/maven-public")
+  override def compileOrder = CompileOrder.ScalaThenJava
+
   override def managedStyle = ManagedStyle.Maven
   override def disableCrossPaths = true
   override def shouldCheckOutputDirectories = false
@@ -21,11 +25,12 @@ class Project(info: ProjectInfo)
   override def filterScalaJars = false
 
   val netty = "org.jboss.netty" %  "netty" % "3.2.2.Final"
-  val finagle = "com.twitter" % "finagle"  % "1.0.9"
-  val util = "com.twitter" % "util"        % "1.3.3"
+  val finagle = "com.twitter" % "finagle"  % "1.0.12"
+  val util = "com.twitter" % "util"        % "1.4.5"
+  val junit = "junit" % "junit" % "3.8.2" % "test"
 
   override def distZipName = "%s.zip".format(name)
 
   val mockito  = "org.mockito"             %  "mockito-all" % "1.8.5" % "test" withSources()
-  val specs    = "org.scala-tools.testing" %  "specs_2.8.0" % "1.6.5" % "test" withSources()
+  val specs    = "org.scala-tools.testing" %  "specs_2.8.1" % "1.6.6" % "test" withSources()
 }

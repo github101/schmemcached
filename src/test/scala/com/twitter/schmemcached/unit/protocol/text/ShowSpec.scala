@@ -10,7 +10,7 @@ object ShowSpec extends Specification {
   "Show" should {
     "show commands" in {
       val value = "value"
-      Show(Add("key", value)).toString(CharsetUtil.UTF_8) mustEqual "add key 0 0 5\r\nvalue\r\n"
+      Show(Add("key", 1, 2, value)).toString(CharsetUtil.UTF_8) mustEqual "add key 1 2 5\r\nvalue\r\n"
     }
   }
 }
