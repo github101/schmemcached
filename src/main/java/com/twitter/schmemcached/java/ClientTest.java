@@ -14,7 +14,7 @@ public class ClientTest {
         .get()
         .hosts("localhost:11211")
         .codec(new Memcached())
-        .buildService();
+        .build();
 
     Client client = ClientBase.newInstance(service);
     client.delete("foo").get();
