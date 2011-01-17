@@ -25,7 +25,7 @@ class Project(info: ProjectInfo)
   override def filterScalaJars = false
 
   val netty = "org.jboss.netty" %  "netty" % "3.2.2.Final"
-  val finagle = "com.twitter" % "finagle-core"  % "1.0.20"
+  val finagle = "com.twitter" % "finagle-core"  % "1.1.1"
   val util = "com.twitter" % "util"        % "1.4.8"
   val junit = "junit" % "junit" % "3.8.2" % "test"
 
