@@ -1,6 +1,6 @@
 package com.twitter.schmemcached.integration;
 
-import com.twitter.finagle.service.Service;
+import com.twitter.finagle.Service;
 import com.twitter.schmemcached.java.Client;
 import com.twitter.schmemcached.java.ClientBase;
 import com.twitter.schmemcached.protocol.Command;
@@ -19,12 +19,12 @@ public class TestClient extends TestCase {
   }
 
   public void testGetAndSet() {
-    com.twitter.finagle.service.Client<Command, Response> service =
+    com.twitter.finagle.Service<Command, Response> service =
       ClientBuilder
         .get()
         .hosts("localhost:11211")
         .codec(new Memcached())
-        .buildService();
+        .build();
 
     Client client = ClientBase.newInstance(service);
     client.delete("foo").get();

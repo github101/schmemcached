@@ -1,7 +1,7 @@
 package com.twitter.schmemcached
 
 import _root_.java.util.TreeMap
-import com.twitter.finagle.service
+import com.twitter.finagle.Service
 import com.twitter.schmemcached.protocol._
 import com.twitter.schmemcached.util.ChannelBufferUtils._
 import com.twitter.util.Future
@@ -16,13 +16,13 @@ object Client {
     ClientBuilder()
       .hosts(host)
       .codec(new Memcached)
-      .buildService[Command, Response]())
+      .build)
 
-  def apply(services: Seq[service.Client[Command, Response]]): Client = {
+  def apply(services: Seq[Service[Command, Response]]): Client = {
     new PartitionedClient(services.map(apply(_)), _.hashCode)
   }
 
-  def apply(raw: service.Client[Command, Response]): Client = {
+  def apply(raw: Service[Command, Response]): Client = {
     new ConnectedClient(raw)
   }
 }
@@ -49,7 +49,7 @@ trait Client {
   def replace(key: String, value: ChannelBuffer): Future[Response] = replace(key, 0, 0, value)
 }
 
-protected class ConnectedClient(underlying: service.Client[Command, Response]) extends Client {
+protected class ConnectedClient(underlying: Service[Command, Response]) extends Client {
   def get(key: String) = {
     underlying(Get(Seq(key))) map {
       case Values(values) =>

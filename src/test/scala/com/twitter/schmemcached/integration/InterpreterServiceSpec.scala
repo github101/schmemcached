@@ -8,7 +8,7 @@ import org.jboss.netty.buffer.ChannelBuffers
 import com.twitter.util.RandomSocket
 import com.twitter.schmemcached.protocol.text.Memcached
 import com.twitter.util.TimeConversions._
-import com.twitter.finagle.service.Service
+import com.twitter.finagle.Service
 import java.net.InetSocketAddress
 import com.twitter.schmemcached.util.ChannelBufferUtils._
 
@@ -24,7 +24,7 @@ object InterpreterServiceSpec extends Specification {
       client = ClientBuilder()
         .hosts("localhost:" + address.getPort)
         .codec(new Memcached)
-        .buildService[Command, Response]()
+        .build()
     }
 
     doAfter {
@@ -39,6 +39,7 @@ object InterpreterServiceSpec extends Specification {
         _ <- client(Set(key, 0, 0, value))
         r <- client(Get(Seq(key)))
       } yield r
+      println("HERE")
       result(1.second) mustEqual Values(Seq(Value(key, value)))
     }
   }

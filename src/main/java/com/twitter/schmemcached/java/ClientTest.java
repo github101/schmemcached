@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 public class ClientTest {
   public static void main(String[] args) {
-    com.twitter.finagle.service.Client<Command, Response> service =
+    com.twitter.finagle.Service<Command, Response> service =
       ClientBuilder
         .get()
         .hosts("localhost:11211")

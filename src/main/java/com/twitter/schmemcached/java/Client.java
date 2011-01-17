@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Client {
-  public static Client newInstance(com.twitter.finagle.service.Client<Command, Response> finagleClient) {
+  public static Client newInstance(com.twitter.finagle.Service<Command, Response> finagleClient) {
     com.twitter.schmemcached.Client schmemcachedClient = com.twitter.schmemcached.Client$.MODULE$.apply(finagleClient);
     return new ClientBase(schmemcachedClient);
   }

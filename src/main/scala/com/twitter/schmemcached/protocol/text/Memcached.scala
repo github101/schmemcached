@@ -2,8 +2,8 @@ package com.twitter.schmemcached.protocol.text
 
 import com.twitter.finagle.builder.Codec
 import org.jboss.netty.channel._
-
-class Memcached() extends Codec {
+import com.twitter.schmemcached.protocol.{Command, Response}
+class Memcached() extends Codec[Command, Response] {
   val serverPipelineFactory = {
     new ChannelPipelineFactory {
       def getPipeline() = {

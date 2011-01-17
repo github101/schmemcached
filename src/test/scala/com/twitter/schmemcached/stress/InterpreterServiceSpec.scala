@@ -6,7 +6,7 @@ import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.schmemcached.protocol._
 import com.twitter.util.RandomSocket
 import com.twitter.schmemcached.protocol.text.Memcached
-import com.twitter.finagle.service.Service
+import com.twitter.finagle.Service
 import com.twitter.schmemcached.util.ChannelBufferUtils._
 
 object InterpreterServiceSpec extends Specification {
@@ -21,7 +21,7 @@ object InterpreterServiceSpec extends Specification {
       client = ClientBuilder()
         .hosts("localhost:" + address.getPort)
         .codec(new Memcached)
-        .buildService[Command, Response]()
+        .build()
     }
 
     doAfter {

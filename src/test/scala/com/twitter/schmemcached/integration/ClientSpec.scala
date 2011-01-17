@@ -3,7 +3,7 @@ package com.twitter.schmemcached.integration
 import org.specs.Specification
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.builder.ServerBuilder
-import com.twitter.finagle.service.Service
+import com.twitter.finagle.Service
 import com.twitter.schmemcached.Client
 import com.twitter.schmemcached.Server
 import com.twitter.schmemcached.protocol._
@@ -22,7 +22,7 @@ object ClientSpec extends Specification {
       val service = ClientBuilder()
         .hosts("localhost:11211")
         .codec(new Memcached)
-        .buildService[Command, Response]()
+        .build()
       val client = Client(service)
 
       client.delete("foo")()
@@ -84,13 +84,13 @@ object ClientSpec extends Specification {
         .name("service1")
         .hosts("localhost:" + address1.getPort)
         .codec(new Memcached)
-        .buildService[Command, Response]()
+        .build()
 
       val service2 = ClientBuilder()
         .name("service2")
         .hosts("localhost:" + address2.getPort)
         .codec(new Memcached)
-        .buildService[Command, Response]()
+        .build()
 
       val client = Client(Seq(service1, service2))
 
