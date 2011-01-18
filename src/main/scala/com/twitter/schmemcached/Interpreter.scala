@@ -18,12 +18,12 @@ class Interpreter(map: AtomicMap[ChannelBuffer, ChannelBuffer]) {
 
   def apply(command: Command): Response = {
     command match {
-      case Set(key, value) =>
+      case Set(key, flags, expiry, value) =>
         map.lock(key) { data =>
           data(key) = value
           Stored
         }
-      case Add(key, value) =>
+      case Add(key, flags, expiry, value) =>
         map.lock(key) { data =>
           val existing = data.get(key)
           if (existing.isDefined)
@@ -33,7 +33,7 @@ class Interpreter(map: AtomicMap[ChannelBuffer, ChannelBuffer]) {
             Stored
           }
         }
-      case Replace(key, value) =>
+      case Replace(key, flags, expiry, value) =>
         map.lock(key) { data =>
           val existing = data.get(key)
           if (existing.isDefined) {
@@ -43,7 +43,7 @@ class Interpreter(map: AtomicMap[ChannelBuffer, ChannelBuffer]) {
             NotStored
           }
         }
-      case Append(key, value) =>
+      case Append(key, flags, expiry, value) =>
         map.lock(key) { data =>
           val existing = data.get(key)
           if (existing.isDefined) {
@@ -53,7 +53,7 @@ class Interpreter(map: AtomicMap[ChannelBuffer, ChannelBuffer]) {
             NotStored
           }
         }
-      case Prepend(key, value) =>
+      case Prepend(key, flags, expiry, value) =>
         map.lock(key) { data =>
           val existing = data.get(key)
           if (existing.isDefined) {

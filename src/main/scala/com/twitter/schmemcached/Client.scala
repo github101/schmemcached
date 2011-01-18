@@ -28,17 +28,25 @@ object Client {
 }
 
 trait Client {
+  def set(key: String, flags: Int, expiry: Int, value: ChannelBuffer):     Future[Response]
+  def add(key: String, flags: Int, expiry: Int, value: ChannelBuffer):     Future[Response]
+  def append(key: String, flags: Int, expiry: Int, value: ChannelBuffer):  Future[Response]
+  def prepend(key: String, flags: Int, expiry: Int, value: ChannelBuffer): Future[Response]
+  def replace(key: String, flags: Int, expiry: Int, value: ChannelBuffer): Future[Response]
+
   def get(key: String):                           Future[Option[ChannelBuffer]]
   def get(keys: Iterable[String]):                Future[Map[String, ChannelBuffer]]
-  def set(key: String, value: ChannelBuffer):     Future[Response]
-  def add(key: String, value: ChannelBuffer):     Future[Response]
-  def append(key: String, value: ChannelBuffer):  Future[Response]
-  def prepend(key: String, value: ChannelBuffer): Future[Response]
   def delete(key: String):                        Future[Response]
   def incr(key: String):                          Future[Int]
   def incr(key: String, delta: Int):              Future[Int]
   def decr(key: String):                          Future[Int]
   def decr(key: String, delta: Int):              Future[Int]
+
+  def set(key: String, value: ChannelBuffer):     Future[Response]= set(key, 0, 0, value)
+  def add(key: String, value: ChannelBuffer):     Future[Response] = add(key, 0, 0, value)
+  def append(key: String, value: ChannelBuffer):  Future[Response] = append(key, 0, 0, value)
+  def prepend(key: String, value: ChannelBuffer): Future[Response] = prepend(key, 0, 0, value)
+  def replace(key: String, value: ChannelBuffer): Future[Response] = replace(key, 0, 0, value)
 }
 
 protected class ConnectedClient(underlying: service.Client[Command, Response]) extends Client {
@@ -61,10 +69,17 @@ protected class ConnectedClient(underlying: service.Client[Command, Response]) e
     }
   }
 
-  def set(key: String, value: ChannelBuffer)     = underlying(Set(key, value))
-  def add(key: String, value: ChannelBuffer)     = underlying(Add(key, value))
-  def append(key: String, value: ChannelBuffer)  = underlying(Append(key, value))
-  def prepend(key: String, value: ChannelBuffer) = underlying(Prepend(key, value))
+  def set(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    underlying(Set(key, flags, expiry, value))
+  def add(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    underlying(Add(key, flags, expiry, value))
+  def append(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    underlying(Append(key, flags, expiry, value))
+  def prepend(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    underlying(Prepend(key, flags, expiry, value))
+  def replace(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    underlying(Replace(key, flags, expiry, value))
+
   def delete(key: String)                        = underlying(Delete(key))
   def incr(key: String): Future[Int]             = incr(key, 1)
   def decr(key: String): Future[Int]             = decr(key, 1)
@@ -87,7 +102,7 @@ protected class ConnectedClient(underlying: service.Client[Command, Response]) e
   override def toString = hashCode.toString // FIXME this incompatible with Ketama
 }
 
-protected class PartitionedClient(clients: Seq[Client], hash: String => Long) extends Client {
+class PartitionedClient(clients: Seq[Client], hash: String => Long) extends Client {
   require(clients.size > 0, "At least one client must be provided")
 
   private[this] val circle = {
@@ -116,10 +131,17 @@ protected class PartitionedClient(clients: Seq[Client], hash: String => Long) ex
     }
   }
 
-  def set(key: String, value: ChannelBuffer)     = idx(key).set(key, value)
-  def add(key: String, value: ChannelBuffer)     = idx(key).add(key, value)
-  def append(key: String, value: ChannelBuffer)  = idx(key).append(key, value)
-  def prepend(key: String, value: ChannelBuffer) = idx(key).prepend(key, value)
+  def set(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    idx(key).set(key, flags, expiry, value)
+  def add(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    idx(key).add(key, flags, expiry, value)
+  def append(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    idx(key).append(key, flags, expiry, value)
+  def prepend(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    idx(key).prepend(key, flags, expiry, value)
+  def replace(key: String, flags: Int, expiry: Int, value: ChannelBuffer) =
+    idx(key).replace(key, flags, expiry, value)
+
   def delete(key: String)                        = idx(key).delete(key)
   def incr(key: String)                          = idx(key).incr(key)
   def incr(key: String, delta: Int)              = idx(key).incr(key, delta)

@@ -27,7 +27,7 @@ object ParseCommand extends Parser[Command] {
     val commandName = tokens.head
     val args = tokens.tail
     if (storageCommands.contains(commandName)) {
-      validateStorageCommand(args)
+      validateStorageCommand(args, null)
       Some(tokens(4).toInt)
     } else None
   }
@@ -36,11 +36,11 @@ object ParseCommand extends Parser[Command] {
     val commandName = tokens.head
     val args = tokens.tail
     commandName match {
-      case SET       => Set(validateStorageCommand(args), data)
-      case ADD       => Add(validateStorageCommand(args), data)
-      case REPLACE   => Replace(validateStorageCommand(args), data)
-      case APPEND    => Append(validateStorageCommand(args), data)
-      case PREPEND   => Prepend(validateStorageCommand(args), data)
+      case SET       => tupled(Set)(validateStorageCommand(args, data))
+      case ADD       => tupled(Add)(validateStorageCommand(args, data))
+      case REPLACE   => tupled(Replace)(validateStorageCommand(args, data))
+      case APPEND    => tupled(Append)(validateStorageCommand(args, data))
+      case PREPEND   => tupled(Prepend)(validateStorageCommand(args, data))
       case _         => throw new NonexistentCommand(commandName.toString)
     }
   }
@@ -58,13 +58,13 @@ object ParseCommand extends Parser[Command] {
     }
   }
 
-  private[this] def validateStorageCommand(tokens: Seq[ChannelBuffer]) = {
+  private[this] def validateStorageCommand(tokens: Seq[ChannelBuffer], data: ChannelBuffer) = {
     if (tokens.size < 4) throw new ClientError("Too few arguments")
     if (tokens.size == 5 && tokens(4) != NOREPLY) throw new ClientError("Too many arguments")
     if (tokens.size > 5) throw new ClientError("Too many arguments")
     if (!tokens(3).matches(DIGITS)) throw new ClientError("Bad frame length")
 
-    tokens.head
+    (tokens.head, tokens(1).toInt, tokens(2).toInt, data)
   }
 
   private[this] def validateArithmeticCommand(tokens: Seq[ChannelBuffer]) = {

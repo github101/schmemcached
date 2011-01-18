@@ -36,6 +36,7 @@ object Show {
       case Stored         => STORED
       case NotStored      => NOT_STORED
       case Deleted        => DELETED
+      case NotFound       => NOT_FOUND
       case Number(value)  =>
         val buffer = ChannelBuffers.dynamicBuffer(10)
         buffer.writeBytes(value.toString.getBytes)
@@ -63,16 +64,16 @@ object Show {
 
   def apply(command: Command): ChannelBuffer = {
     command match {
-      case Add(key, value) =>
-        showStorageCommand(ADD, key, value)
-      case Set(key, value) =>
-        showStorageCommand(SET, key, value)
-      case Replace(key, value) =>
-        showStorageCommand(REPLACE, key, value)
-      case Append(key, value) =>
-        showStorageCommand(APPEND, key, value)
-      case Prepend(key, value) =>
-        showStorageCommand(PREPEND, key, value)
+      case Add(key, flags, expiry, value) =>
+        showStorageCommand(ADD, key, flags, expiry, value)
+      case Set(key, flags, expiry, value) =>
+        showStorageCommand(SET, key, flags, expiry, value)
+      case Replace(key, flags, expiry, value) =>
+        showStorageCommand(REPLACE, key, flags, expiry, value)
+      case Append(key, flags, expiry, value) =>
+        showStorageCommand(APPEND, key, flags, expiry, value)
+      case Prepend(key, flags, expiry, value) =>
+        showStorageCommand(PREPEND, key, flags, expiry, value)
       case Get(keys) =>
         apply(Gets(keys))
       case Gets(keys) =>
@@ -122,15 +123,16 @@ object Show {
     case _                     => throw throwable
   }
 
-  @inline private[this] def showStorageCommand(name: Array[Byte], key: ChannelBuffer, value: ChannelBuffer) = {
+  @inline private[this] def showStorageCommand(
+    name: Array[Byte], key: ChannelBuffer, flags: Int, expiry: Int, value: ChannelBuffer) = {
     val buffer = ChannelBuffers.dynamicBuffer(50 + value.readableBytes)
     buffer.writeBytes(name)
     buffer.writeBytes(SPACE)
     buffer.writeBytes(key)
     buffer.writeBytes(SPACE)
-    buffer.writeBytes(ZERO)
+    buffer.writeBytes(flags.toString.getBytes)
     buffer.writeBytes(SPACE)
-    buffer.writeBytes(ZERO)
+    buffer.writeBytes(expiry.toString.getBytes)
     buffer.writeBytes(SPACE)
     buffer.writeBytes(value.readableBytes.toString.getBytes)
     buffer.writeBytes(DELIMETER)

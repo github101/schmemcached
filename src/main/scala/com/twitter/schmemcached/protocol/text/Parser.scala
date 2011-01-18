@@ -1,6 +1,6 @@
 package com.twitter.schmemcached.protocol.text
 
-import org.jboss.netty.buffer.{ChannelBufferIndexFinder, ChannelBuffer}
+import org.jboss.netty.buffer.ChannelBufferIndexFinder
 import collection.mutable.ArrayBuffer
 import org.jboss.netty.buffer.ChannelBuffer
 
